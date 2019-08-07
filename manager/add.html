@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bootstrap 101 Template</title>
+
+  <!-- Bootstrap -->
+  <link href="./lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!--
+      HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries
+    -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  <style>
+    .wrap {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: url('images/bg03.jpg') center bottom no-repeat;
+      overflow: auto;
+    }
+
+    .navbar-brand {
+      padding: 10px 15px;
+    }
+
+    .page-title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .file-input {
+      outline: none;
+      display: inline-block;
+      margin-top: 5px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-horizontal {
+      margin-top: 10px;
+    }
+
+    .logout {
+      font-weight: 900;
+      font-size: 20px;
+      color: #ff0000;
+      text-decoration: none;
+    }
+
+    .logout:hover {
+      text-decoration: none;
+      color: yellowgreen;
+    }
+
+    .preview {
+      width: 100px;
+      height: 100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <nav class="navbar  navbar-inverse navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#mymenu">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><img src="images/logo.png"></a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+              <div class="row">
+                <div class="col-md-6 page-title">新增英雄</div>
+                <div class="col-md-6 text-right">当前位置：首页 &gt; 新增英雄</div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <form action="#" method="" class="form-horizontal">
+                <div class="form-group">
+                  <label for="heroName" class="col-sm-2 control-label">姓名</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="heroName" name="heroName" placeholder="请输入姓名" />
+                  </div>
+                </div>
+                <div class="form-group">
+                    <label for="heroName" class="col-sm-2 control-label">昵称</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="heroNickName" name="heroNickName" placeholder="请输入昵称" />
+                    </div>
+                  </div>
+                <div class="form-group">
+                  <label for="skillName" class="col-sm-2 control-label">技能</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="skillName" name="skillName" placeholder="请输入技能" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="heroIcon" class="col-sm-2 control-label">头像</label>
+                  <div class="col-sm-10">
+                    <input type="file" class="file-input" id="heroIcon" name="heroIcon" />
+                    <img src="./images/盖伦.png" class="preview" alt="" id="yulan" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-success btn-add">
+                      新 增
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./lib/bootstrap/js/jquery-1.12.4.js"></script>
+  <script src="./lib/bootstrap/js/bootstrap.min.js"></script>
+
+
+  <script>
+    ////////////////////  完成图片预览
+    // 当上传控件（文件域）的内容发生改变的时候，完成预览
+    $('#heroIcon').change(function () {
+      // 1. 生成一个临时的url
+      // var url = URL.createObjectURL(文件对象);
+      // console.dir(this);
+      var objFile = this.files[0];
+      var url = URL.createObjectURL(objFile);
+      console.log(url);
+      // 2. 改变“盖伦”那个图片的src为临时的url即可
+      $('#yulan').attr('src', url);
+    });
+  </script>
+
+  <script>
+    // 当点击“新增”按钮的时候，要阻止默认行为，然后使用FormData收集表单各项数据。
+    // 然后将数据通过 $.ajax() 方法提交给接口 /addHero  （注：接口我们自定，目前还没有）。
+    $('.btn-add').click(function (e) {
+      e.preventDefault(); //阻止表单提交
+      // 收集表单数据
+      var fd = new FormData($('form')[0]);
+      // 发生ajax请求
+      $.ajax({
+        contentType: false,
+        processData: false,
+        type: 'POST',
+        url: '/addHero',
+        data: fd,
+        dataType: 'json',
+        success: function (res) {
+          // 预期的res ===== {"code": 200, "message": "添加英雄成功"}
+          // 无论成功还是失败，都提示
+          alert(res.message);
+          if (res.code === 200) {
+            // 添加成功，跳转到index.html
+            location.href = '/index.html';
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
