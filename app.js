@@ -26,7 +26,7 @@ app.post('/addHero', upload.single('heroIcon'), (req, res) => {
         file: req.file.path,
         skill: req.body.skillName
     };
-    db(sql, values, (err, result) => {
+    db(sql, values, (err, result) => {  
         if (err) {
             res.send({ code: 201, message: '添加失败' })
         } else {
