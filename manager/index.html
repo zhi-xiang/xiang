@@ -148,8 +148,9 @@
               <table id="my-table" class="table table-bordered mp15">
                 <thead>
                   <tr>
+                    <th width="5%">id</th>
                     <th width="20%">头像</th>
-                    <th width="20%">姓名</th>
+                    <th width="15%">姓名</th>
                     <th width="20%">昵称</th>
                     <th width="20%">技能</th>
                     <th width="20%">操作</th>
@@ -161,19 +162,7 @@
               </table>
             </div>
             <div class="panel-footer text-center">
-              <ul class="pagination">
-                <li>
-                  <a href="#" aria-label="Previous">
-                    <span aria-hidden="true">«</span>
-                  </a>
-                </li>
-                <li class="page-num"><a href="#">1/1</a></li>
-                <li>
-                  <a href="#" aria-label="Next">
-                    <span aria-hidden="true">»</span>
-                  </a>
-                </li>
-              </ul>
+              <ul class="pagination" id="pagination"></ul>
             </div>
 
           </div>
@@ -187,33 +176,93 @@
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script src="./lib/bootstrap/js/bootstrap.min.js"></script>
   <script src="./lib/js/template-web.js"></script>
+  <script src="./lib/js/jquery.twbsPagination.js"></script>
 
   <script id="moban" type="text/html">
     {{each arr}}
     <tr>
+      <td>{{$value.id}}</td>
       <td><img src="{{$value.file}}" /></td>
       <td>{{$value.name}}</td>
       <td>{{$value.nickname}}</td>
       <td>{{$value.skill}}</td>
       <td>
-        <button onclick="location.href='./edit.html'" class="btn btn-primary">编辑</button>
-        <button onclick="alert('你真狠')" class="btn btn-danger">删除</button>
+        <button onclick="location.href='edit.html?id={{$value.id}}';" class="btn btn-primary">编辑</button>
+        <button class="btn btn-danger" data-id="{{$value.id}}">删除</button>
       </td>
     </tr>
     {{/each}}
   </script>
   <script>
+    let flag =true;
+    let params = {
+      page:1 
+    }
     // 页面刷新，马上发送ajax请求，请求所有的英雄
-    $.get('/getHeroes', function (res) {
+    function loadData(){
+      $.get('/getHeroes',params, function (res) {
       // console.log(res);
       // 调用template
       var str = template('moban', {
-        arr: res
+        arr: res.data
       });
       // 把str放到tbody中
       $('tbody').html(str);
+      if (flag){
+        page(res.pageTotal);
+        flag = false;
+      }
     }, 'json');
+    }
+    loadData()
   </script>
-</body>
-</html>
 
+  <script>
+    $('body').on('click', '.btn-danger', function () {
+      if (!confirm('你确定要删除吗')) {
+        return;
+      }
+      var id = $(this).attr('data-id');
+      var that = $(this);
+      $.get('/deleteHero', {
+        id: id
+      }, function (res) {
+        alert(res.message);
+        if (res.code === 200) {
+          that.parents('tr').remove();
+        }
+      }, 'json');
+    });
+  </script>
+
+<!-- <script type="text/javascript">
+  $(function () {
+      window.pagObj = $('#pagination').twbsPagination({
+          totalPages: 35,
+          visiblePages: 10,
+          onPageClick: function (event, page) {
+              console.info(page + ' (from options)');
+          }
+      }).on('page', function (event, page) {
+          console.info(page + ' (from event listening)');
+      });
+  });
+</script> -->
+
+
+  <script type="text/javascript">
+  function page (total) {
+      window.pagObj = $('#pagination').twbsPagination({
+          totalPages: total,
+          visiblePages: 10
+          
+      }).on('page', function (event, page) {
+         
+          params.page = page;
+          loadData()
+      });
+  };
+</script>
+</body>
+
+</html>
