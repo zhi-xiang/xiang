@@ -77,14 +77,14 @@
                 <div class="form-group">
                   <label for="userName" class="col-sm-2 control-label">用户名</label>
                   <div class="col-sm-10">
-                    <input type="text" name="username" value="叶良辰" class="form-control" id="username"
+                    <input type="text" name="username"  class="form-control" id="username"
                       placeholder="请输入用户名" />
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="userPass" class="col-sm-2 control-label">密码</label>
                   <div class="col-sm-10">
-                    <input type="password" name="password" value="1234" class="form-control" id="password"
+                    <input type="password" name="password"  class="form-control" id="password"
                       placeholder="请输入密码" />
                   </div>
                 </div>
@@ -95,7 +95,7 @@
                   </div>
                   <div class="col-sm-4">
                     <!-- 设置验证码的路由地址即可 -->
-                    <img class="vCode" src="./images/code.png" alt="" />
+                    <img class="vCode"  src="/captcha" onclick="this.src='/captcha?t=' + Date.now()" />
                   </div>
                 </div>
                 <div class="form-group">
@@ -117,6 +117,22 @@
   <script src="./lib/bootstrap/js/jquery-1.12.4.js"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script src="./lib/bootstrap/js/bootstrap.min.js"></script>
+  <script src="./lib/md5/md5.min.js"></script>
+  <script>
+    $('.login').click(function (e) {
+      e.preventDefault();
+      var data = $('form').serializeArray();
+      data[1].value = md5(data[1].value);
+      $.post('/login', data, function (res) {
+        alert(res.message);
+        if (res.code === 200) {
+          location.href = '/index.html';
+        }
+      }, 'json')
+    })
+  </script>
+
+
 </body>
 
 </html>

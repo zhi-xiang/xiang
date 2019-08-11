@@ -107,12 +107,23 @@
   <script src="./lib/bootstrap/js/bootstrap.min.js"></script>
   <!-- 导入md5 -->
   <script src="./lib/md5/md5.min.js"></script>
-  <!-- <script>
-    $('.rgister').click(function(){
-      var data = $('form').serializeArray;
-      data[1].value
+  <script>
+    $('.register').click(function () {
+      // console.log($('form').serialize())
+      var data = $('form').serializeArray();
+      data[1].value = md5(data[1].value);
+      $.post('/reg', data, function (res) {
+        alert(res.message);
+        if (res.code === 200) {
+          location.href = '/login.html'
+        }
+      }, 'json')
     })
-  </script> -->
+  </script>
+
+  
+
+
 </body>
 
 </html>
